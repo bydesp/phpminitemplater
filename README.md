@@ -1,7 +1,10 @@
-phpminitemplater - php template engine
+phpminitemplater
+================
+php template engine
 ================
 Simple template engine for php projects. Current version 0.1b
-================
+
+
 USAGE
 
 <?
