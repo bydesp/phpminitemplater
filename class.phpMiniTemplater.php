@@ -1,5 +1,10 @@
 <?
-
+/*
+ * This file is part of phpMiniTemplater
+ * (c) 2013 Anton Dvornikov
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 class phpMiniTemplater
 {
     
@@ -11,21 +16,31 @@ class phpMiniTemplater
     (
         'sTemplate'             => '',
         'sTemplateDir'          => '',
-        'sTemplateType'         => self::PMT_UNDEFINEDTEMPLATE
+        'iTemplateType'         => self::PMT_UNDEFINEDTEMPLATE
     );
     
     public $aData = array();
     
-    function __construct($sTemplateNameParam = '', $sTemplateTypeParam = self::PMT_UNDEFINEDTEMPLATE, $aDataParam = array()){
-        
-        switch ($sTemplateTypeParam)
+    /**
+     * Creates a phpMiniTempater object
+     * 
+     * @author Anton Dvornikov
+     * 
+     * @param string $sTemplateNameParam Name of template
+     * @param integer $iTemplateTypeParam Type of template
+     * @param array $aDataParam Array with template parameters
+     */    
+    function __construct($sTemplateNameParam = '', $iTemplateTypeParam = self::PMT_UNDEFINEDTEMPLATE, $aDataParam = array())
+    {
+        switch ($iTemplateTypeParam)
         {
             case self::PMT_FILETEMPLATE :
-                if (file_exists($sTemplateParam)) {
+                if (file_exists($sTemplateParam))
+                {
                     $this->aParams['sTemplate'] = $sTemplateNameParam;
                     $this->aParams['sTemplateType'] = self::PMT_FILETEMPLATE;
                     break;
-                    }
+                }
             case self::PMT_INLINETEMPLATE : 
                     $this->aParams['sTemplate'] = $sTemplateNameParam;
                     $this->aParams['sTemplateType'] = self::PMT_INLINETEMPLATE;
@@ -35,20 +50,21 @@ class phpMiniTemplater
                     $this->aParams['sTemplateType'] = self::PMT_UNDEFINEDTEMPLATE;
                     break;
         }
-            
         $this->aData = $aDataParam;
-        }
-        
-    function Parse(){
-        
+    }
+    
+    /**
+     * Parse phpminitemplater object
+     */
+    function Parse()
+    {
         $sReadyTemplate = !empty($this->aParam['sTemplateType']) ? $this->sInlineTemplate : file_get_contents($this->sFileTemplate);
-        
         if ($sReadyTemplate == '') return $sReadyTemplate;
         foreach ($this->aData as $sKey => $oValue){
             if (is_array($oValue)) {
-                $sReadyTemplateInt = '';
-                foreach ($oValue as $oValueInt) $sReadyTemplateInt .= $oValueInt->Parse();
-                $sReadyTemplate = preg_replace("/\{$sKey\}/",$sReadyTemplateInt,$sReadyTemplate);
+                $sReadyTemplateInternal = '';
+                foreach ($oValue as $oValueInt) $sReadyTemplateInternal .= $oValueInt->Parse();
+                $sReadyTemplate = preg_replace("/\{$sKey\}/",$sReadyTemplateInternal,$sReadyTemplate);
                 }
             elseif (is_object($oValue)) {
                 $sReadyTemplate = preg_replace("/\{$sKey\}/",$oValue->Parse(),$sReadyTemplate);
@@ -57,6 +73,6 @@ class phpMiniTemplater
                 $sReadyTemplate = preg_replace("/\{$sKey\}/",$oValue,$sReadyTemplate);
             }
         return $sReadyTemplate;
-        }
     }
+}
 ?>
