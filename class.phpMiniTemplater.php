@@ -5,6 +5,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+ 
 class phpMiniTemplater
 {
     
@@ -59,19 +60,22 @@ class phpMiniTemplater
     function Parse()
     {
         $sReadyTemplate = !empty($this->aParam['sTemplateType']) ? $this->sInlineTemplate : file_get_contents($this->sFileTemplate);
-        if ($sReadyTemplate == '') return $sReadyTemplate;
-        foreach ($this->aData as $sKey => $oValue){
-            if (is_array($oValue)) {
+        if ($sReadyTemplate == '') 
+            return $sReadyTemplate;
+        foreach ($this->aData as $sKey => $oValue)
+        {
+            if (is_array($oValue))
+            {
                 $sReadyTemplateInternal = '';
-                foreach ($oValue as $oValueInt) $sReadyTemplateInternal .= $oValueInt->Parse();
+                foreach ($oValue as $oValueInt) 
+                    $sReadyTemplateInternal .= $oValueInt->Parse();
                 $sReadyTemplate = preg_replace("/\{$sKey\}/",$sReadyTemplateInternal,$sReadyTemplate);
-                }
-            elseif (is_object($oValue)) {
+            }
+            elseif (is_object($oValue))
                 $sReadyTemplate = preg_replace("/\{$sKey\}/",$oValue->Parse(),$sReadyTemplate);
-                }
             else 
                 $sReadyTemplate = preg_replace("/\{$sKey\}/",$oValue,$sReadyTemplate);
-            }
+        }
         return $sReadyTemplate;
     }
 }
