@@ -16,7 +16,6 @@ class phpMiniTemplater
     public $aParams = array
     (
         'sTemplate' => '',
-        'sTemplateDir' => '',
         'iTemplateType' => self::PMT_UNDEFINEDTEMPLATE
     );
     
@@ -37,20 +36,20 @@ class phpMiniTemplater
         {
             case self::PMT_FILETEMPLATE :
                 if (file_exists($sTemplateParam))
-                {
-                    $this->aParams['sTemplate'] = $sTemplateNameParam;
-                    $this->aParams['sTemplateType'] = self::PMT_FILETEMPLATE;
-                    break;
-                }
+                    $this->aParams['iTemplateType'] = self::PMT_FILETEMPLATE;
+                else
+                    $this->aParams['iTemplateType'] = self::PMT_UNDEFINEDTEMPLATE;
+                
+                break;
             case self::PMT_INLINETEMPLATE :
-                    $this->aParams['sTemplate'] = $sTemplateNameParam;
-                    $this->aParams['sTemplateType'] = self::PMT_INLINETEMPLATE;
-                    break;
+                $this->aParams['iTemplateType'] = self::PMT_INLINETEMPLATE;
+                break;
+            case self::PMT_UNDEFINEDTEMPLATE :                
             default :
-                    $this->aParams['sTemplate'] = $sTemplateNameParam;
-                    $this->aParams['sTemplateType'] = self::PMT_UNDEFINEDTEMPLATE;
-                    break;
+                $this->aParams['iTemplateType'] = self::PMT_UNDEFINEDTEMPLATE;
+                break;
         }
+        $this->aParams['sTemplate'] = $sTemplateNameParam;
         $this->aData = $aDataParam;
     }
     
@@ -59,22 +58,26 @@ class phpMiniTemplater
 */
     function Parse()
     {
-        switch ($this->aParam['sTemplateType'])
+        switch ($this->aParams['iTemplateType'])
         {
             case self::PMT_UNDEFINEDTEMPLATE :
             case self::PMT_FILETEMPLATE :
                 if (file_exists($this->aParams['sTemplate']))
+                {
                     $sReadyTemplate = file_get_contents($this->aParams['sTemplate']);
+                    break;
+                }
                 else
-                    $this->aParam['sTemplateType'] = self::PMT_INLINETEMPLATE;
-                break;
+                    $this->aParams['iTemplateType'] = self::PMT_INLINETEMPLATE;
             case self::PMT_INLINETEMPLATE :
             default :
                 $sReadyTemplate = $this->aParams['sTemplate'];
                 break;            
         }
+        
         if ($sReadyTemplate == '')
             return $sReadyTemplate;
+            
         foreach ($this->aData as $sKey => $oValue)
         {
             if (is_array($oValue))
@@ -89,6 +92,7 @@ class phpMiniTemplater
             else
                 $sReadyTemplate = preg_replace("/\{$sKey\}/",$oValue,$sReadyTemplate);
         }
+        
         return $sReadyTemplate;
     }
 }
