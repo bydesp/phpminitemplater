@@ -19,7 +19,7 @@ class phpMiniTemplater
         'iTemplateType' => self::PMT_UNDEFINEDTEMPLATE
     );
     
-    public $aData = array();
+    public $xData = array();
     
 /**
 * Creates a phpMiniTempater object
@@ -27,10 +27,10 @@ class phpMiniTemplater
 * @author Anton Dvornikov
 *
 * @param string $sTemplateNameParam Name of template
-* @param integer $iTemplateTypeParam Type of template
-* @param array $aDataParam Array with template parameters
+* @param mixed $xDataParam variable with template parameters
+* @param int $iTemplateTypeParam Type of template
 */
-    function __construct($sTemplateNameParam = '', $iTemplateTypeParam = self::PMT_UNDEFINEDTEMPLATE, $aDataParam = array())
+    function __construct($sTemplateNameParam = '', $xDataParam = array(), $iTemplateTypeParam = self::PMT_UNDEFINEDTEMPLATE)
     {
         switch ($iTemplateTypeParam)
         {
@@ -39,7 +39,6 @@ class phpMiniTemplater
                     $this->aParams['iTemplateType'] = self::PMT_FILETEMPLATE;
                 else
                     $this->aParams['iTemplateType'] = self::PMT_UNDEFINEDTEMPLATE;
-                
                 break;
             case self::PMT_INLINETEMPLATE :
                 $this->aParams['iTemplateType'] = self::PMT_INLINETEMPLATE;
@@ -50,7 +49,7 @@ class phpMiniTemplater
                 break;
         }
         $this->aParams['sTemplate'] = $sTemplateNameParam;
-        $this->aData = $aDataParam;
+        $this->xData = $xDataParam;
     }
     
 /**
@@ -78,13 +77,13 @@ class phpMiniTemplater
         if ($sReadyTemplate == '')
             return $sReadyTemplate;
             
-        foreach ($this->aData as $sKey => $oValue)
+        foreach ($this->xData as $sKey => $oValue)
         {
             if (is_array($oValue))
             {
                 $sReadyTemplateInternal = '';
-                foreach ($oValue as $oValueInt)
-                    $sReadyTemplateInternal .= $oValueInt->Parse();
+                foreach ($oValue as $oValueInternal)
+                    $sReadyTemplateInternal .= $oValueInternal->Parse();
                 $sReadyTemplate = preg_replace("/\{$sKey\}/",$sReadyTemplateInternal,$sReadyTemplate);
             }
             elseif (is_object($oValue))
