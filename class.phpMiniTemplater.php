@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 * This file is part of phpMiniTemplater
 * (c) 2013 Anton Dvornikov
@@ -43,7 +43,7 @@ class phpMiniTemplater
             case self::PMT_INLINETEMPLATE :
                 $this->aParams['iTemplateType'] = self::PMT_INLINETEMPLATE;
                 break;
-            case self::PMT_UNDEFINEDTEMPLATE :                
+            case self::PMT_UNDEFINEDTEMPLATE :
             default :
                 $this->aParams['iTemplateType'] = self::PMT_UNDEFINEDTEMPLATE;
                 break;
@@ -71,7 +71,7 @@ class phpMiniTemplater
             case self::PMT_INLINETEMPLATE :
             default :
                 $sReadyTemplate = $this->aParams['sTemplate'];
-                break;            
+                break;
         }
         
         if ($sReadyTemplate == '')
